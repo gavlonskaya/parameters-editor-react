@@ -1,26 +1,72 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import ParamEditor from "./components/ParamEditor";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface Param {
+  id: number;
+  name: string;
+  type: "string";
+}
+
+interface ParamValue {
+  paramId: number;
+  value: string;
+}
+
+interface Model {
+  paramValues: ParamValue[];
+}
+
+class App extends Component {
+  params: Param[] = [
+    {
+      id: 1,
+      name: "Назначение",
+      type: "string",
+    },
+    {
+      id: 2,
+      name: "Длина",
+      type: "string",
+    },
+  ];
+
+  initialModel: Model = {
+    paramValues: [
+      {
+        paramId: 1,
+        value: "повседневное",
+      },
+      {
+        paramId: 2,
+        value: "макси",
+      },
+    ],
+  };
+
+  state = {
+    model: { ...this.initialModel },
+  };
+
+  handleUpdateModel = (updatedModel: Model) => {
+    this.setState({ model: updatedModel });
+  };
+
+  render() {
+    return (
+      <div>
+        <h1>Редактор параметров</h1>
+        <ParamEditor
+          params={this.params}
+          model={this.state.model}
+          onUpdateModel={this.handleUpdateModel}
+        />
+        <div>
+          <h2>Модель:</h2>
+          <pre>{JSON.stringify(this.state.model, null, 2)}</pre>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
