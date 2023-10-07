@@ -20,6 +20,7 @@ interface Props {
   model: Model;
   onUpdateModel: (model: Model) => void;
   onAddParam: (newParam: Param) => void;
+  onRemoveParam: (paramId: number) => void;
 }
 
 interface State {
@@ -86,6 +87,23 @@ class ParamEditor extends Component<Props, State> {
     });
   };
 
+  handleRemoveParam = (paramId: number) => {
+    const { editedModel } = this.state;
+    const { params, onRemoveParam } = this.props;
+    const updatedParams = params.filter((param) => param.id !== paramId);
+    const updatedParamValues = editedModel.paramValues.filter(
+      (paramValue) => paramValue.paramId !== paramId
+    );
+
+    this.setState({
+      editedModel: {
+        ...editedModel,
+        paramValues: updatedParamValues,
+      },
+    });
+    onRemoveParam(paramId);
+  };
+
   handleSave = () => {
     const { onUpdateModel } = this.props;
     onUpdateModel(this.state.editedModel);
@@ -109,6 +127,9 @@ class ParamEditor extends Component<Props, State> {
               }
               onChange={(e) => this.handleParamChange(param.id, e.target.value)}
             />
+            <button onClick={() => this.handleRemoveParam(param.id)}>
+              Удалить
+            </button>
           </div>
         ))}
         <div>

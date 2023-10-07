@@ -57,6 +57,11 @@ class App extends Component {
     this.setState({ params: [...this.params] });
   };
 
+  handleRemoveParam = (paramId: number) => {
+    this.params = this.params.filter((param) => param.id !== paramId);
+    this.setState({ params: [...this.params] });
+  };
+
   render() {
     return (
       <div>
@@ -66,6 +71,7 @@ class App extends Component {
           model={this.state.model}
           onUpdateModel={this.handleUpdateModel}
           onAddParam={this.handleAddParam}
+          onRemoveParam={this.handleRemoveParam}
         />
         <div>
           <h2>Модель:</h2>
