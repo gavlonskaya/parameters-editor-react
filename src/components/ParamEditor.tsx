@@ -19,10 +19,12 @@ interface Props {
   params: Param[];
   model: Model;
   onUpdateModel: (model: Model) => void;
+  onAddParam: (newParam: Param) => void;
 }
 
 interface State {
   editedModel: Model;
+  newParamName: string;
 }
 
 class ParamEditor extends Component<Props, State> {
@@ -30,6 +32,7 @@ class ParamEditor extends Component<Props, State> {
     super(props);
     this.state = {
       editedModel: { ...props.model },
+      newParamName: "",
     };
   }
 
@@ -51,6 +54,38 @@ class ParamEditor extends Component<Props, State> {
     }
   };
 
+  handleAddParam = () => {
+    const { editedModel, newParamName } = this.state;
+    const { params, onAddParam } = this.props;
+
+    const newParamId = Math.max(...params.map((param) => param.id), 0) + 1;
+
+    const newParam: Param = {
+      id: newParamId,
+      name: newParamName,
+      type: "string",
+    };
+
+    onAddParam(newParam);
+
+    const updatedParams = [...params, newParam];
+
+    const newParamValue: ParamValue = {
+      paramId: newParamId,
+      value: "",
+    };
+
+    const updatedParamValues = [...editedModel.paramValues, newParamValue];
+
+    this.setState({
+      editedModel: {
+        ...editedModel,
+        paramValues: updatedParamValues,
+      },
+      newParamName: "",
+    });
+  };
+
   handleSave = () => {
     const { onUpdateModel } = this.props;
     onUpdateModel(this.state.editedModel);
@@ -58,7 +93,7 @@ class ParamEditor extends Component<Props, State> {
 
   render() {
     const { params } = this.props;
-    const { editedModel } = this.state;
+    const { editedModel, newParamName } = this.state;
 
     return (
       <div>
@@ -76,6 +111,15 @@ class ParamEditor extends Component<Props, State> {
             />
           </div>
         ))}
+        <div>
+          <input
+            type="text"
+            placeholder="Имя нового параметра"
+            value={newParamName}
+            onChange={(e) => this.setState({ newParamName: e.target.value })}
+          />
+          <button onClick={this.handleAddParam}>Добавить</button>
+        </div>
         <button onClick={this.handleSave}>Сохранить</button>
       </div>
     );

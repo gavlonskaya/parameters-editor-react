@@ -51,6 +51,12 @@ class App extends Component {
     this.setState({ model: updatedModel });
   };
 
+  handleAddParam = (newParam: Param) => {
+    this.params.push(newParam);
+
+    this.setState({ params: [...this.params] });
+  };
+
   render() {
     return (
       <div>
@@ -59,6 +65,7 @@ class App extends Component {
           params={this.params}
           model={this.state.model}
           onUpdateModel={this.handleUpdateModel}
+          onAddParam={this.handleAddParam}
         />
         <div>
           <h2>Модель:</h2>
