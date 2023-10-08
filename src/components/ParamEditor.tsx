@@ -8,7 +8,7 @@ interface Param {
 
 interface ParamValue {
   paramId: number;
-  value: string;
+  value: any;
 }
 
 interface Model {
@@ -44,14 +44,37 @@ class ParamEditor extends Component<Props, State> {
     );
 
     if (paramIndex !== -1) {
-      const updatedParamValues = [...editedModel.paramValues];
-      updatedParamValues[paramIndex] = { paramId, value };
-      this.setState({
-        editedModel: {
-          ...editedModel,
-          paramValues: updatedParamValues,
-        },
-      });
+      const numericValue = parseFloat(value);
+      if (!isNaN(numericValue)) {
+        const updatedParamValues = [...editedModel.paramValues];
+        updatedParamValues[paramIndex] = { paramId, value: numericValue };
+
+        this.setState({
+          editedModel: {
+            ...editedModel,
+            paramValues: updatedParamValues,
+          },
+        });
+      } else if (value.includes(",")) {
+        const valueArray = value.split(",").map((item) => item.trim());
+        const updatedParamValues = [...editedModel.paramValues];
+        updatedParamValues[paramIndex] = { paramId, value: valueArray };
+        this.setState({
+          editedModel: {
+            ...editedModel,
+            paramValues: updatedParamValues,
+          },
+        });
+      } else {
+        const updatedParamValues = [...editedModel.paramValues];
+        updatedParamValues[paramIndex] = { paramId, value };
+        this.setState({
+          editedModel: {
+            ...editedModel,
+            paramValues: updatedParamValues,
+          },
+        });
+      }
     }
   };
 
